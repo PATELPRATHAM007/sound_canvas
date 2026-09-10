@@ -230,7 +230,7 @@ class RewardedAdManager implements LevelPlayRewardedAdListener {
   }
 
   @override
-  void onAdDisplayFailed(LevelPlayAdInfo adInfo, LevelPlayAdError error) {
+  void onAdDisplayFailed(LevelPlayAdError error, LevelPlayAdInfo adInfo) {
     debugPrint('[RewardedAdManager] LevelPlay Rewarded Ad Display Failed: ${error.errorMessage}');
     _isAdLoaded = false;
     _grantReward();
@@ -251,7 +251,7 @@ class RewardedAdManager implements LevelPlayRewardedAdListener {
 
   @override
   void onAdRewarded(LevelPlayReward reward, LevelPlayAdInfo adInfo) {
-    debugPrint('[RewardedAdManager] LevelPlay Reward Granted: ${reward.amount} ${reward.label}');
+    debugPrint('[RewardedAdManager] LevelPlay Reward Granted: ${reward.amount} ${reward.name}');
     _grantReward();
   }
 
