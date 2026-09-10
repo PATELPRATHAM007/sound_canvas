@@ -6,14 +6,17 @@ This document contains the complete end-to-end setup for **Unity LevelPlay Media
 
 ## 1. Credentials Reference
 
-| Parameter                                    | Value                    | Location in Dashboard                           |
-| :------------------------------------------- | :----------------------- | :---------------------------------------------- |
-| **LevelPlay AppKey**                   | `27977c8bd`            | LevelPlay Dashboard -> Apps                     |
-| **Banner Ad Unit ID**                  | `yleah8iqe2n6cazu`     | LevelPlay Dashboard -> Ad Units -> Banner       |
-| **Interstitial Ad Unit ID**            | `q232dj5takb2tgch`     | LevelPlay Dashboard -> Ad Units -> Interstitial |
-| **Unity Ads Game ID**                  | `800274942`            | Unity Ads Dashboard -> Monetization             |
-| **Unity Ads Placement (Banner)**       | `Banner_Android`       | Unity Ads Dashboard -> Placements               |
-| **Unity Ads Placement (Interstitial)** | `Interstitial_Android` | Unity Ads Dashboard -> Placements               |
+| Parameter                                    | Value                                                              | Location in Dashboard                           |
+| :------------------------------------------- | :----------------------------------------------------------------- | :---------------------------------------------- |
+| **Unity Ads Game ID**                  | `800370998`                                                        | Unity Ads Dashboard -> Sound Canvas             |
+| **Organization Core ID**               | `13469955020066`                                                   | Unity Cloud -> Organization Settings            |
+| **Stats API Key**                      | `60b23c5ea1ead4776e9ac9fc62f3f353ee77770f0f6ce4bb09226a81b49e1cbd`| Unity Ads Dashboard -> Complete app integration |
+| **Banner Placement ID**                | `BP_Banner_Android`                                                | Unity Ads Dashboard -> Placements               |
+| **Interstitial Placement ID**          | `BP_Interstitial_Android`                                          | Unity Ads Dashboard -> Placements               |
+| **Rewarded Placement ID**              | `BP_Rewarded_Android`                                              | Unity Ads Dashboard -> Placements               |
+| **LevelPlay AppKey**                   | `27977c8bd`                                                        | LevelPlay Dashboard -> Apps                     |
+| **LevelPlay Banner Ad Unit ID**        | `yleah8iqe2n6cazu`                                                 | LevelPlay Dashboard -> Ad Units -> Banner       |
+| **LevelPlay Interstitial Ad Unit ID**  | `k9e660zpvll4l3k9`                                                 | LevelPlay Dashboard -> Ad Units -> Interstitial |
 
 ---
 

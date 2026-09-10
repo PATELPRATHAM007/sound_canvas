@@ -94,7 +94,7 @@ class InterstitialAdManager implements LevelPlayInterstitialAdListener {
         }
       }
 
-      // 2. Show Full-Screen Test Interstitial Modal if context provided, otherwise execute action
+      // Show Full-Screen Test Interstitial Modal if context provided, otherwise execute action
       if (context != null && context.mounted) {
         _showTestInterstitialDialog(context);
       } else {
@@ -104,8 +104,50 @@ class InterstitialAdManager implements LevelPlayInterstitialAdListener {
       return;
     }
 
-    _executeOnProceed();
-    loadAd();
+    // 2. Direct Unity Ads Interstitial Display
+    if (_isAdLoaded) {
+      try {
+        debugPrint('[InterstitialAdManager] Showing Unity Direct Interstitial Ad: $placementId');
+        await UnityAds.showVideoAd(
+          placementId: placementId,
+          onStart: (pId) => debugPrint('[InterstitialAdManager] Unity Video Ad Started: $pId'),
+          onClick: (pId) => debugPrint('[InterstitialAdManager] Unity Video Ad Clicked: $pId'),
+          onSkipped: (pId) {
+            debugPrint('[InterstitialAdManager] Unity Video Ad Skipped: $pId');
+            _isAdLoaded = false;
+            _executeOnProceed();
+            loadAd();
+          },
+          onComplete: (pId) {
+            debugPrint('[InterstitialAdManager] Unity Video Ad Completed: $pId');
+            _isAdLoaded = false;
+            _executeOnProceed();
+            loadAd();
+          },
+          onFailed: (pId, error, message) {
+            debugPrint('[InterstitialAdManager] Unity Video Ad Display Failed: $error - $message');
+            _isAdLoaded = false;
+            if (context != null && context.mounted) {
+              _showTestInterstitialDialog(context);
+            } else {
+              _executeOnProceed();
+              loadAd();
+            }
+          },
+        );
+        return;
+      } catch (e) {
+        debugPrint('[InterstitialAdManager] Exception displaying Unity Video Ad: $e');
+      }
+    }
+
+    // Fallback if ad is still loading
+    if (context != null && context.mounted) {
+      _showTestInterstitialDialog(context);
+    } else {
+      _executeOnProceed();
+      loadAd();
+    }
   }
 
   void _showTestInterstitialDialog(BuildContext context) {

@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:unity_ads_plugin/unity_ads_plugin.dart';
 import 'package:unity_levelplay_mediation/unity_levelplay_mediation.dart';
 import 'interstitial_ad_manager.dart';
+import 'rewarded_ad_manager.dart';
 
 class AdManager implements LevelPlayInitListener {
   static final AdManager instance = AdManager._internal();
@@ -13,14 +14,32 @@ class AdManager implements LevelPlayInitListener {
   static const MethodChannel _nativeChannel = MethodChannel('com.novasoftstudio.soundcanvas/device_info');
   String? deviceAdId;
 
-  // Unity Credentials
-  static const String defaultAppKey = "27977c8bd";
-  static const String defaultBannerAdUnitId = "yleah8iqe2n6cazu";
-  static const String defaultInterstitialAdUnitId = "k9e660zpvll4l3k9";
+  // Unity Ads Dashboard Credentials (Sound Canvas)
+  static const String unityGameId = "800370998";
+  static const String unityOrgCoreId = "13469955020066";
+  static const String unityStatsApiKey = "60b23c5ea1ead4776e9ac9fc62f3f353ee77770f0f6ce4bb09226a81b49e1cbd";
+
+  // Placements (Android)
+  static const String defaultBannerPlacement = "BP_Banner_Android";
+  static const String defaultInterstitialPlacement = "BP_Interstitial_Android";
+  static const String defaultRewardedPlacement = "BP_Rewarded_Android";
+
+  // Active Ad Credentials
+  static const String defaultAppKey = unityGameId;
+  static const String defaultBannerAdUnitId = defaultBannerPlacement;
+  static const String defaultInterstitialAdUnitId = defaultInterstitialPlacement;
+  static const String defaultRewardedAdUnitId = defaultRewardedPlacement;
+
+  // LevelPlay Mediation Backup Credentials (Saved for future mediation linking)
+  static const String levelPlayAppKey = "27977c8bd";
+  static const String levelPlayBannerAdUnitId = "yleah8iqe2n6cazu";
+  static const String levelPlayInterstitialAdUnitId = "k9e660zpvll4l3k9";
+  static const String levelPlayRewardedAdUnitId = "rewarded_ad_unit";
 
   String appKey = defaultAppKey;
   String bannerAdUnitId = defaultBannerAdUnitId;
   String interstitialAdUnitId = defaultInterstitialAdUnitId;
+  String rewardedAdUnitId = defaultRewardedAdUnitId;
 
   bool isInitialized = false;
   bool isInitializing = false;
@@ -36,6 +55,7 @@ class AdManager implements LevelPlayInitListener {
     String? appKeyOverride,
     String? bannerAdUnitOverride,
     String? interstitialAdUnitOverride,
+    String? rewardedAdUnitOverride,
     bool enableTestMode = true,
   }) async {
     if (isInitialized) {
@@ -55,6 +75,7 @@ class AdManager implements LevelPlayInitListener {
     if (appKeyOverride != null) appKey = appKeyOverride;
     if (bannerAdUnitOverride != null) bannerAdUnitId = bannerAdUnitOverride;
     if (interstitialAdUnitOverride != null) interstitialAdUnitId = interstitialAdUnitOverride;
+    if (rewardedAdUnitOverride != null) rewardedAdUnitId = rewardedAdUnitOverride;
 
     final isNumericGameId = RegExp(r'^\d+$').hasMatch(appKey);
     debugPrint('[AdManager] Starting Init with AppKey: $appKey (isNumericGameId: $isNumericGameId)');
@@ -121,6 +142,7 @@ class AdManager implements LevelPlayInitListener {
       _initCompleter!.complete(true);
     }
     InterstitialAdManager.instance.loadAd();
+    RewardedAdManager.instance.loadAd();
   }
 
   void _onInitFailedComplete() {

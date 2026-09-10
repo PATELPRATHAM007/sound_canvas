@@ -3,6 +3,7 @@ import '../theme/app_colors.dart';
 import '../widgets/glass_container.dart';
 import '../ads/banner_ad_widget.dart';
 import '../ads/interstitial_ad_manager.dart';
+import '../ads/rewarded_ad_manager.dart';
 import '../ads/ad_manager.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -16,6 +17,44 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   int _selectedTab = 0;
   int _clickCounter = 0;
+  int _credits = 150;
+
+  void _watchRewardedAdForBonus() {
+    RewardedAdManager.instance.showRewardedAd(
+      context: context,
+      onRewardEarned: () {
+        setState(() => _credits += 50);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.stars_rounded, color: Colors.amber, size: 22),
+                const SizedBox(width: 8),
+                Text(
+                  '+50 Credits Earned! 🎉 (Total: $_credits)',
+                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            backgroundColor: const Color(0xFF131127),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      },
+      onSkipped: () {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Ad was skipped. Watch full video to earn credits.'),
+            backgroundColor: Colors.black87,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          ),
+        );
+      },
+    );
+  }
 
   final List<String> _tabs = ['Posts', 'Liked', 'Saved', 'Playlists'];
 
@@ -341,6 +380,104 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
 
               const SizedBox(height: 16),
+
+              // Rewarded Ad Bonus Card
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: GlassContainer(
+                  borderRadius: 20,
+                  padding: const EdgeInsets.all(16),
+                  backgroundColor: const Color(0xFF131127).withValues(alpha: 0.95),
+                  borderColor: const Color(0xFFF5A623).withValues(alpha: 0.4),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 46,
+                        height: 46,
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFFF5A623), Color(0xFFFF5722)],
+                          ),
+                          borderRadius: BorderRadius.circular(14),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFFF5A623).withValues(alpha: 0.4),
+                              blurRadius: 10,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: const Icon(Icons.card_giftcard_rounded, color: Colors.white, size: 26),
+                      ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                const Text(
+                                  'Daily Bonus',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFF5A623).withValues(alpha: 0.2),
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: Text(
+                                    '$_credits pts',
+                                    style: const TextStyle(
+                                      color: Color(0xFFF5A623),
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 2),
+                            const Text(
+                              'Watch a short ad to earn +50 credits',
+                              style: TextStyle(
+                                color: Colors.white60,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFF5A623),
+                          foregroundColor: Colors.black,
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 0,
+                        ),
+                        onPressed: _watchRewardedAdForBonus,
+                        child: const Text(
+                          'Claim',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 14),
 
               // Banner Ad Widget
               const Padding(
