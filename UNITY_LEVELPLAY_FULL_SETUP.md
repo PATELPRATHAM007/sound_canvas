@@ -8,13 +8,16 @@ This document contains the complete end-to-end setup for **Unity LevelPlay Media
 
 | Parameter                                    | Value                                                              | Location in Dashboard                           |
 | :------------------------------------------- | :----------------------------------------------------------------- | :---------------------------------------------- |
-| **Live Banner Ad Unit ID**             | `90491fcc-e635-4920-b270-3a7cc1cf46ae`                             | LevelPlay Dashboard -> Ad Units -> Banner       |
-| **Live Interstitial Ad Unit ID**       | `90491fcc-e635-4920-b270-3a7cc1cf46ae`                             | LevelPlay Dashboard -> Ad Units -> Interstitial |
-| **Live Rewarded Ad Unit ID**           | `90491fcc-e635-4920-b270-3a7cc1cf46ae`                             | LevelPlay Dashboard -> Ad Units -> Rewarded     |
-| **Live AppKey**                        | `90491fcc-e635-4920-b270-3a7cc1cf46ae`                             | LevelPlay Dashboard -> Apps                     |
-| **Unity Ads Game ID (Backup)**         | `800370998`                                                        | Unity Ads Dashboard -> Sound Canvas             |
+| **Live Banner Ad Unit ID**             | `978cc626-daf4-4055-9c44-6473dfc4d2cb`                             | LevelPlay Dashboard -> Ad Units -> Banner       |
+| **Live Interstitial Ad Unit ID**       | `978cc626-daf4-4055-9c44-6473dfc4d2cb`                             | LevelPlay Dashboard -> Ad Units -> Interstitial |
+| **Live Rewarded Ad Unit ID**           | `978cc626-daf4-4055-9c44-6473dfc4d2cb`                             | LevelPlay Dashboard -> Ad Units -> Rewarded     |
+| **Live AppKey**                        | `978cc626-daf4-4055-9c44-6473dfc4d2cb`                             | LevelPlay Dashboard -> Apps                     |
+| **Unity Ads Game ID (SoundCanvas)**    | `800388435`                                                        | Unity Ads Dashboard -> Sound Canvas             |
 | **Organization Core ID**               | `13469955020066`                                                   | Unity Cloud -> Organization Settings            |
 | **Stats API Key**                      | `60b23c5ea1ead4776e9ac9fc62f3f353ee77770f0f6ce4bb09226a81b49e1cbd`| Unity Ads Dashboard -> Complete app integration |
+| **Unity Banner Placement ID**         | `BP_Banner_Android`                                                | Unity Ads Dashboard -> Placements               |
+| **Unity Interstitial Placement ID**   | `BP_Interstitial_Android`                                          | Unity Ads Dashboard -> Placements               |
+| **Unity Rewarded Placement ID**       | `BP_Rewarded_Android`                                              | Unity Ads Dashboard -> Placements               |
 
 ---
 
@@ -189,17 +192,24 @@ class AdManager implements LevelPlayInitListener {
   factory AdManager() => instance;
   AdManager._internal();
 
-  static const String defaultAppKey = "27977c8bd";
-  static const String defaultBannerAdUnitId = "yleah8iqe2n6cazu";
-  static const String defaultInterstitialAdUnitId = "q232dj5takb2tgch";
+  static const String liveAppKey = "978cc626-daf4-4055-9c44-6473dfc4d2cb";
+  static const String liveBannerAdUnitId = "978cc626-daf4-4055-9c44-6473dfc4d2cb";
+  static const String liveInterstitialAdUnitId = "978cc626-daf4-4055-9c44-6473dfc4d2cb";
+  static const String liveRewardedAdUnitId = "978cc626-daf4-4055-9c44-6473dfc4d2cb";
+
+  static const String defaultAppKey = liveAppKey;
+  static const String defaultBannerAdUnitId = liveBannerAdUnitId;
+  static const String defaultInterstitialAdUnitId = liveInterstitialAdUnitId;
+  static const String defaultRewardedAdUnitId = liveRewardedAdUnitId;
 
   String appKey = defaultAppKey;
   String bannerAdUnitId = defaultBannerAdUnitId;
   String interstitialAdUnitId = defaultInterstitialAdUnitId;
+  String rewardedAdUnitId = defaultRewardedAdUnitId;
 
   bool isInitialized = false;
   bool isInitializing = false;
-  bool isTestMode = true;
+  bool isTestMode = false;
   bool isUnityAdsEngine = false;
 
   Completer<bool>? _initCompleter;

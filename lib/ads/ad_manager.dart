@@ -14,22 +14,22 @@ class AdManager implements LevelPlayInitListener {
   static const MethodChannel _nativeChannel = MethodChannel('com.novasoftstudio.soundcanvas/device_info');
   String? deviceAdId;
 
-  // Live Unity / LevelPlay Mediation Credentials
-  static const String liveAppKey = "90491fcc-e635-4920-b270-3a7cc1cf46ae";
-  static const String liveBannerAdUnitId = "90491fcc-e635-4920-b270-3a7cc1cf46ae";
-  static const String liveInterstitialAdUnitId = "90491fcc-e635-4920-b270-3a7cc1cf46ae";
-  static const String liveRewardedAdUnitId = "90491fcc-e635-4920-b270-3a7cc1cf46ae";
-
-  // Active Ad Credentials (Live Ads)
-  static const String defaultAppKey = liveAppKey;
-  static const String defaultBannerAdUnitId = liveBannerAdUnitId;
-  static const String defaultInterstitialAdUnitId = liveInterstitialAdUnitId;
-  static const String defaultRewardedAdUnitId = liveRewardedAdUnitId;
-
-  // Unity Ads Dashboard Credentials (Sound Canvas Backup)
-  static const String unityGameId = "800370998";
+  // Unity Ads Dashboard Credentials (Sound Canvas Live)
+  static const String unityGameId = "800388435";
   static const String unityOrgCoreId = "13469955020066";
   static const String unityStatsApiKey = "60b23c5ea1ead4776e9ac9fc62f3f353ee77770f0f6ce4bb09226a81b49e1cbd";
+  static const String unityProjectId = "978cc626-daf4-4055-9c44-6473dfc4d2cb";
+
+  // Unity Direct Placement IDs
+  static const String unityBannerPlacementId = "BP_Banner_Android";
+  static const String unityInterstitialPlacementId = "BP_Interstitial_Android";
+  static const String unityRewardedPlacementId = "BP_Rewarded_Android";
+
+  // Active Ad Credentials (Live Ads)
+  static const String defaultAppKey = unityGameId;
+  static const String defaultBannerAdUnitId = unityBannerPlacementId;
+  static const String defaultInterstitialAdUnitId = unityInterstitialPlacementId;
+  static const String defaultRewardedAdUnitId = unityRewardedPlacementId;
 
   String appKey = defaultAppKey;
   String bannerAdUnitId = defaultBannerAdUnitId;
@@ -73,33 +73,16 @@ class AdManager implements LevelPlayInitListener {
     if (rewardedAdUnitOverride != null) rewardedAdUnitId = rewardedAdUnitOverride;
 
     final isNumericGameId = RegExp(r'^\d+$').hasMatch(appKey);
-    debugPrint('[AdManager] Starting Init with AppKey: $appKey (isNumericGameId: $isNumericGameId)');
+    debugPrint('[AdManager] Starting Live Ad Init with AppKey/GameID: $appKey (isNumericGameId: $isNumericGameId)');
 
-    // 1. If numerical Game ID (e.g. 800274942), use Direct Unity Ads
+    // 1. If numerical Game ID (e.g. 800388435), use Direct Unity Ads Engine
     if (isNumericGameId) {
-      isUnityAdsEngine = true;
-      try {
-        await UnityAds.init(
-          gameId: appKey,
-          testMode: isTestMode,
-          onComplete: () {
-            debugPrint('[AdManager] Direct Unity Ads Initialized Successfully!');
-            _onInitSuccessComplete();
-          },
-          onFailed: (error, errorMessage) {
-            debugPrint('[AdManager] Direct Unity Ads Init Failed: $error - $errorMessage');
-            _onInitFailedComplete();
-          },
-        );
-      } catch (e) {
-        debugPrint('[AdManager] Direct Unity Ads Exception: $e');
-        _onInitFailedComplete();
-      }
+      await _initDirectUnityAds(appKey);
       isInitializing = false;
       return;
     }
 
-    // 2. Alphanumeric Key (e.g. 27977c8bd), use Unity LevelPlay Mediation
+    // 2. Alphanumeric Key, use Unity LevelPlay Mediation
     isUnityAdsEngine = false;
     try {
       if (isTestMode) {
@@ -112,8 +95,8 @@ class AdManager implements LevelPlayInitListener {
       final initRequest = LevelPlayInitRequest.builder(appKey).build();
       await LevelPlay.init(initRequest: initRequest, initListener: this);
     } catch (e) {
-      debugPrint('[AdManager] LevelPlay Init Exception: $e');
-      _onInitFailedComplete();
+      debugPrint('[AdManager] LevelPlay Init Exception: $e. Falling back to Direct Unity Ads...');
+      await _initDirectUnityAds(unityGameId);
     }
 
     try {
@@ -127,6 +110,27 @@ class AdManager implements LevelPlayInitListener {
     } catch (_) {}
 
     isInitializing = false;
+  }
+
+  Future<void> _initDirectUnityAds(String gameId) async {
+    isUnityAdsEngine = true;
+    try {
+      await UnityAds.init(
+        gameId: gameId,
+        testMode: isTestMode,
+        onComplete: () {
+          debugPrint('[AdManager] Direct Unity Ads Initialized Successfully with Game ID: $gameId!');
+          _onInitSuccessComplete();
+        },
+        onFailed: (error, errorMessage) {
+          debugPrint('[AdManager] Direct Unity Ads Init Failed: $error - $errorMessage');
+          _onInitFailedComplete();
+        },
+      );
+    } catch (e) {
+      debugPrint('[AdManager] Direct Unity Ads Exception: $e');
+      _onInitFailedComplete();
+    }
   }
 
   void _onInitSuccessComplete() {
@@ -212,6 +216,11 @@ class AdManager implements LevelPlayInitListener {
   @override
   void onInitFailed(LevelPlayInitError error) {
     debugPrint('[AdManager] LevelPlay SDK Init Failed: ${error.errorMessage} (code: ${error.errorCode})');
+    if (!isUnityAdsEngine && unityGameId.isNotEmpty) {
+      debugPrint('[AdManager] LevelPlay init rejected, falling back to Direct Unity Ads with Game ID: $unityGameId');
+      _initDirectUnityAds(unityGameId);
+      return;
+    }
     _onInitFailedComplete();
   }
 }

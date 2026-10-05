@@ -27,10 +27,14 @@ class InterstitialAdManager implements LevelPlayInterstitialAdListener {
     }
 
     _isLoading = true;
-    final adUnitId = AdManager.instance.interstitialAdUnitId;
+    final adUnitId = AdManager.instance.isUnityAdsEngine
+        ? (AdManager.instance.interstitialAdUnitId.contains('-')
+            ? AdManager.unityInterstitialPlacementId
+            : AdManager.instance.interstitialAdUnitId)
+        : AdManager.instance.interstitialAdUnitId;
 
     try {
-      debugPrint('[InterstitialAdManager] Loading Interstitial Ad: $adUnitId');
+      debugPrint('[InterstitialAdManager] Loading Live Interstitial Ad: $adUnitId');
 
       if (!AdManager.instance.isUnityAdsEngine) {
         _interstitialAd ??= LevelPlayInterstitialAd(adUnitId: adUnitId);
@@ -77,7 +81,11 @@ class InterstitialAdManager implements LevelPlayInterstitialAdListener {
     BuildContext? context,
   }) async {
     _currentOnProceedCallback = onProceed;
-    final placementId = AdManager.instance.interstitialAdUnitId;
+    final placementId = AdManager.instance.isUnityAdsEngine
+        ? (AdManager.instance.interstitialAdUnitId.contains('-')
+            ? AdManager.unityInterstitialPlacementId
+            : AdManager.instance.interstitialAdUnitId)
+        : AdManager.instance.interstitialAdUnitId;
 
     // 1. LevelPlay Interstitial Display
     if (!AdManager.instance.isUnityAdsEngine) {

@@ -94,16 +94,25 @@ class _BannerAdWidgetState extends State<BannerAdWidget>
 
     // Direct Unity Ads Placement (if numerical Game ID)
     if (AdManager.instance.isUnityAdsEngine) {
-      return UnityBannerAd(
-        placementId: AdManager.instance.bannerAdUnitId,
-        onLoad: (placementId) {
-          debugPrint('[BannerAdWidget] Unity Banner Loaded: $placementId');
-          if (mounted) setState(() => _bannerFailed = false);
-        },
-        onFailed: (placementId, error, message) {
-          debugPrint('[BannerAdWidget] Unity Banner Failed: $error $message');
-          if (mounted) setState(() => _bannerFailed = true);
-        },
+      final placementId = AdManager.instance.bannerAdUnitId.contains('-')
+          ? AdManager.unityBannerPlacementId
+          : AdManager.instance.bannerAdUnitId;
+
+      return SizedBox(
+        width: 320,
+        height: 50,
+        child: UnityBannerAd(
+          placementId: placementId,
+          onLoad: (placementId) {
+            debugPrint('[BannerAdWidget] Unity Live Banner Loaded: $placementId');
+            if (mounted) setState(() => _bannerFailed = false);
+          },
+          onClick: (placementId) => debugPrint('[BannerAdWidget] Unity Banner Clicked: $placementId'),
+          onFailed: (placementId, error, message) {
+            debugPrint('[BannerAdWidget] Unity Banner note: $error $message');
+            if (mounted) setState(() => _bannerFailed = true);
+          },
+        ),
       );
     }
 

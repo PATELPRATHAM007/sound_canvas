@@ -31,7 +31,11 @@ class RewardedAdManager implements LevelPlayRewardedAdListener {
     }
 
     _isLoading = true;
-    final adUnitId = AdManager.instance.rewardedAdUnitId;
+    final adUnitId = AdManager.instance.isUnityAdsEngine
+        ? (AdManager.instance.rewardedAdUnitId.contains('-')
+            ? AdManager.unityRewardedPlacementId
+            : AdManager.instance.rewardedAdUnitId)
+        : AdManager.instance.rewardedAdUnitId;
 
     try {
       debugPrint('[RewardedAdManager] Loading Rewarded Ad: $adUnitId');
@@ -88,7 +92,11 @@ class RewardedAdManager implements LevelPlayRewardedAdListener {
     _onSkippedCallback = onSkipped;
     _onFailedCallback = onFailed;
 
-    final placementId = AdManager.instance.rewardedAdUnitId;
+    final placementId = AdManager.instance.isUnityAdsEngine
+        ? (AdManager.instance.rewardedAdUnitId.contains('-')
+            ? AdManager.unityRewardedPlacementId
+            : AdManager.instance.rewardedAdUnitId)
+        : AdManager.instance.rewardedAdUnitId;
 
     // 1. LevelPlay Rewarded Display
     if (!AdManager.instance.isUnityAdsEngine) {
