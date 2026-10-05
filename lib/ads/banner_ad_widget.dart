@@ -72,19 +72,19 @@ class _BannerAdWidgetState extends State<BannerAdWidget>
         mainAxisAlignment: MainAxisAlignment.center,
         children: const [
           SizedBox(
-            width: 16,
-            height: 16,
+            width: 14,
+            height: 14,
             child: CircularProgressIndicator(
               strokeWidth: 2,
               color: Color(0xFF5B46F6),
             ),
           ),
-          SizedBox(width: 10),
+          SizedBox(width: 8),
           Text(
-            'Initializing LevelPlay Ads...',
+            'Connecting to Sponsor Network...',
             style: TextStyle(
               color: Color(0xFF73809C),
-              fontSize: 13,
+              fontSize: 12,
               fontWeight: FontWeight.w400,
             ),
           ),
@@ -107,61 +107,26 @@ class _BannerAdWidgetState extends State<BannerAdWidget>
       );
     }
 
-    // Interactive Test Banner Fallback when account is pending approval or no-fill
+    // Clean placeholder while awaiting live ad fill / retrying
     if (_bannerFailed) {
       return Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFF5B46F6), Color(0xFF8E37F5)],
-              ),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: const Text(
-              'TEST AD',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
-              ),
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: const [
+          Icon(Icons.bolt_rounded, color: Color(0xFF5B46F6), size: 16),
+          SizedBox(width: 6),
+          Text(
+            'Awaiting live sponsor fill...',
+            style: TextStyle(
+              color: Color(0xFF73809C),
+              fontSize: 11,
+              fontWeight: FontWeight.w500,
             ),
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text(
-                  'LevelPlay Banner Active',
-                  style: TextStyle(
-                    color: Color(0xFF0A1020),
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Text(
-                  'AppKey: 27977c8bd • Retrying live fill...',
-                  style: TextStyle(
-                    color: Color(0xFF73809C),
-                    fontSize: 10,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-          ),
-          const Icon(Icons.refresh_rounded, color: Color(0xFF5B46F6), size: 18),
         ],
       );
     }
 
-    // LevelPlay Banner Ad View (320x50 standard banner)
+    // LevelPlay Banner Ad View (320x50 standard live banner)
     return SizedBox(
       width: 320,
       height: 50,
@@ -171,7 +136,7 @@ class _BannerAdWidgetState extends State<BannerAdWidget>
         adSize: effectiveAdSize,
         listener: this,
         onPlatformViewCreated: () {
-          debugPrint('[BannerAdWidget] LevelPlay Banner View Created. Requesting load...');
+          debugPrint('[BannerAdWidget] LevelPlay Banner View Created. Requesting live load...');
           _bannerKey.currentState?.loadAd();
         },
       ),

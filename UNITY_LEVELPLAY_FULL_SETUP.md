@@ -8,15 +8,13 @@ This document contains the complete end-to-end setup for **Unity LevelPlay Media
 
 | Parameter                                    | Value                                                              | Location in Dashboard                           |
 | :------------------------------------------- | :----------------------------------------------------------------- | :---------------------------------------------- |
-| **Unity Ads Game ID**                  | `800370998`                                                        | Unity Ads Dashboard -> Sound Canvas             |
+| **Live Banner Ad Unit ID**             | `90491fcc-e635-4920-b270-3a7cc1cf46ae`                             | LevelPlay Dashboard -> Ad Units -> Banner       |
+| **Live Interstitial Ad Unit ID**       | `90491fcc-e635-4920-b270-3a7cc1cf46ae`                             | LevelPlay Dashboard -> Ad Units -> Interstitial |
+| **Live Rewarded Ad Unit ID**           | `90491fcc-e635-4920-b270-3a7cc1cf46ae`                             | LevelPlay Dashboard -> Ad Units -> Rewarded     |
+| **Live AppKey**                        | `90491fcc-e635-4920-b270-3a7cc1cf46ae`                             | LevelPlay Dashboard -> Apps                     |
+| **Unity Ads Game ID (Backup)**         | `800370998`                                                        | Unity Ads Dashboard -> Sound Canvas             |
 | **Organization Core ID**               | `13469955020066`                                                   | Unity Cloud -> Organization Settings            |
 | **Stats API Key**                      | `60b23c5ea1ead4776e9ac9fc62f3f353ee77770f0f6ce4bb09226a81b49e1cbd`| Unity Ads Dashboard -> Complete app integration |
-| **Banner Placement ID**                | `BP_Banner_Android`                                                | Unity Ads Dashboard -> Placements               |
-| **Interstitial Placement ID**          | `BP_Interstitial_Android`                                          | Unity Ads Dashboard -> Placements               |
-| **Rewarded Placement ID**              | `BP_Rewarded_Android`                                              | Unity Ads Dashboard -> Placements               |
-| **LevelPlay AppKey**                   | `27977c8bd`                                                        | LevelPlay Dashboard -> Apps                     |
-| **LevelPlay Banner Ad Unit ID**        | `yleah8iqe2n6cazu`                                                 | LevelPlay Dashboard -> Ad Units -> Banner       |
-| **LevelPlay Interstitial Ad Unit ID**  | `k9e660zpvll4l3k9`                                                 | LevelPlay Dashboard -> Ad Units -> Interstitial |
 
 ---
 

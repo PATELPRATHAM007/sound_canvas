@@ -53,6 +53,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         );
       },
+      onFailed: (error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(error),
+            backgroundColor: const Color(0xFF1E1E2E),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          ),
+        );
+      },
     );
   }
 

@@ -77,7 +77,7 @@ class RewardedAdManager implements LevelPlayRewardedAdListener {
     }
   }
 
-  /// Shows the Rewarded Ad and grants reward upon full completion
+  /// Shows the Live Rewarded Ad and grants reward upon full completion
   Future<void> showRewardedAd({
     required VoidCallback onRewardEarned,
     VoidCallback? onSkipped,
@@ -96,7 +96,7 @@ class RewardedAdManager implements LevelPlayRewardedAdListener {
         try {
           final ready = await _levelPlayRewardedAd!.isAdReady();
           if (ready) {
-            debugPrint('[RewardedAdManager] Showing LevelPlay Rewarded Ad: $placementId');
+            debugPrint('[RewardedAdManager] Showing Live LevelPlay Rewarded Ad: $placementId');
             await _levelPlayRewardedAd!.showAd();
             return;
           }
@@ -105,13 +105,10 @@ class RewardedAdManager implements LevelPlayRewardedAdListener {
         }
       }
 
-      // Show Full-Screen Test Rewarded Modal if context provided, otherwise execute reward
-      if (context != null && context.mounted) {
-        _showTestRewardedDialog(context);
-      } else {
-        _grantReward();
-        loadAd();
-      }
+      // Ad not ready: inform user and preload
+      debugPrint('[RewardedAdManager] Live Rewarded Ad not ready yet. Preloading...');
+      _onFailedCallback?.call('Live rewarded video is preparing. Please try again in a few moments.');
+      loadAd();
       return;
     }
 
@@ -139,12 +136,7 @@ class RewardedAdManager implements LevelPlayRewardedAdListener {
             debugPrint('[RewardedAdManager] Unity Rewarded Ad Display Failed: $error - $message');
             _isAdLoaded = false;
             _onFailedCallback?.call(message);
-            if (context != null && context.mounted) {
-              _showTestRewardedDialog(context);
-            } else {
-              _grantReward();
-              loadAd();
-            }
+            loadAd();
           },
         );
         return;
@@ -153,13 +145,8 @@ class RewardedAdManager implements LevelPlayRewardedAdListener {
       }
     }
 
-    // Fallback if ad is still loading
-    if (context != null && context.mounted) {
-      _showTestRewardedDialog(context);
-    } else {
-      _grantReward();
-      loadAd();
-    }
+    _onFailedCallback?.call('Rewarded video is currently loading.');
+    loadAd();
   }
 
   void _grantReward() {
@@ -168,30 +155,6 @@ class RewardedAdManager implements LevelPlayRewardedAdListener {
       _onRewardEarnedCallback = null;
       callback();
     }
-  }
-
-  void _showTestRewardedDialog(BuildContext context) {
-    showGeneralDialog(
-      context: context,
-      barrierDismissible: false,
-      barrierColor: Colors.black87,
-      transitionDuration: const Duration(milliseconds: 250),
-      pageBuilder: (dialogContext, animation, secondaryAnimation) {
-        return _TestRewardedScreen(
-          adUnitId: AdManager.instance.rewardedAdUnitId,
-          onRewardClaimed: () {
-            Navigator.of(dialogContext).pop();
-            _grantReward();
-            loadAd();
-          },
-          onSkipped: () {
-            Navigator.of(dialogContext).pop();
-            _onSkippedCallback?.call();
-            loadAd();
-          },
-        );
-      },
-    );
   }
 
   // --- LevelPlayRewardedAdListener Callbacks ---
@@ -226,27 +189,27 @@ class RewardedAdManager implements LevelPlayRewardedAdListener {
 
   @override
   void onAdDisplayed(LevelPlayAdInfo adInfo) {
-    debugPrint('[RewardedAdManager] LevelPlay Rewarded Ad Displayed');
+    debugPrint('[RewardedAdManager] LevelPlay Rewarded Ad Displayed: ${adInfo.adUnitId}');
   }
 
   @override
   void onAdDisplayFailed(LevelPlayAdError error, LevelPlayAdInfo adInfo) {
     debugPrint('[RewardedAdManager] LevelPlay Rewarded Ad Display Failed: ${error.errorMessage}');
     _isAdLoaded = false;
-    _grantReward();
+    _onFailedCallback?.call(error.errorMessage);
     loadAd();
   }
 
   @override
   void onAdClosed(LevelPlayAdInfo adInfo) {
-    debugPrint('[RewardedAdManager] LevelPlay Rewarded Ad Closed');
+    debugPrint('[RewardedAdManager] LevelPlay Rewarded Ad Closed: ${adInfo.adUnitId}');
     _isAdLoaded = false;
     loadAd();
   }
 
   @override
   void onAdClicked(LevelPlayAdInfo adInfo) {
-    debugPrint('[RewardedAdManager] LevelPlay Rewarded Ad Clicked');
+    debugPrint('[RewardedAdManager] LevelPlay Rewarded Ad Clicked: ${adInfo.adUnitId}');
   }
 
   @override
@@ -257,182 +220,4 @@ class RewardedAdManager implements LevelPlayRewardedAdListener {
 
   @override
   void onAdInfoChanged(LevelPlayAdInfo adInfo) {}
-}
-
-/// Full-screen Test Rewarded Ad UI for development preview
-class _TestRewardedScreen extends StatefulWidget {
-  final String adUnitId;
-  final VoidCallback onRewardClaimed;
-  final VoidCallback onSkipped;
-
-  const _TestRewardedScreen({
-    required this.adUnitId,
-    required this.onRewardClaimed,
-    required this.onSkipped,
-  });
-
-  @override
-  State<_TestRewardedScreen> createState() => _TestRewardedScreenState();
-}
-
-class _TestRewardedScreenState extends State<_TestRewardedScreen> {
-  int _countdown = 5;
-  Timer? _timer;
-  bool _canClaim = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_countdown > 1) {
-        setState(() => _countdown--);
-      } else {
-        _timer?.cancel();
-        setState(() {
-          _countdown = 0;
-          _canClaim = true;
-        });
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: SafeArea(
-        child: Container(
-          margin: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Color(0xFF131127), Color(0xFF070612)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.circular(28),
-            border: Border.all(color: const Color(0xFFF5A623).withValues(alpha: 0.3)),
-          ),
-          child: Column(
-            children: [
-              // Header
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFFF5A623), Color(0xFFFF5722)],
-                        ),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Row(
-                        children: [
-                          Icon(Icons.stars_rounded, color: Colors.white, size: 14),
-                          SizedBox(width: 4),
-                          Text(
-                            'REWARDED TEST AD',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 11,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        _canClaim ? Icons.close_rounded : Icons.timer,
-                        color: Colors.white70,
-                        size: 24,
-                      ),
-                      onPressed: _canClaim ? widget.onSkipped : null,
-                    ),
-                  ],
-                ),
-              ),
-
-              const Spacer(),
-
-              // Reward Trophy Icon
-              Container(
-                width: 110,
-                height: 110,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFFF5A623), Color(0xFFFF5722)],
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFFF5A623).withValues(alpha: 0.5),
-                      blurRadius: 28,
-                      spreadRadius: 6,
-                    ),
-                  ],
-                ),
-                child: const Icon(
-                  Icons.card_giftcard_rounded,
-                  color: Colors.white,
-                  size: 58,
-                ),
-              ),
-              const SizedBox(height: 24),
-              const Text(
-                'Watch Ad to Earn 50 Canvas Credits',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Placement: ${widget.adUnitId}',
-                style: const TextStyle(
-                  color: Colors.white54,
-                  fontSize: 13,
-                ),
-              ),
-
-              const Spacer(),
-
-              // Claim Button
-              Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: _canClaim ? const Color(0xFFF5A623) : Colors.white24,
-                    minimumSize: const Size(double.infinity, 52),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
-                  onPressed: _canClaim ? widget.onRewardClaimed : null,
-                  child: Text(
-                    _canClaim ? 'Claim Reward & Continue ✨' : 'Reward unlocks in $_countdown s',
-                    style: TextStyle(
-                      color: _canClaim ? Colors.black : Colors.white60,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 }

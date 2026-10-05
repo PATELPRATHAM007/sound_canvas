@@ -11,9 +11,9 @@ Future<void> main() async {
   // Initialize Dependency Injection ServiceLocator
   ServiceLocator.init();
 
-  // Initialize Unity LevelPlay Mediation SDK safely at startup
+  // Initialize Unity LevelPlay Mediation SDK for Live Ads at startup
   try {
-    await AdManager.instance.initialize(enableTestMode: true);
+    await AdManager.instance.initialize(enableTestMode: false);
   } catch (e) {
     debugPrint('[main] AdManager init warning: $e');
   }

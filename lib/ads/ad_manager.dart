@@ -14,27 +14,22 @@ class AdManager implements LevelPlayInitListener {
   static const MethodChannel _nativeChannel = MethodChannel('com.novasoftstudio.soundcanvas/device_info');
   String? deviceAdId;
 
-  // Unity Ads Dashboard Credentials (Sound Canvas)
+  // Live Unity / LevelPlay Mediation Credentials
+  static const String liveAppKey = "90491fcc-e635-4920-b270-3a7cc1cf46ae";
+  static const String liveBannerAdUnitId = "90491fcc-e635-4920-b270-3a7cc1cf46ae";
+  static const String liveInterstitialAdUnitId = "90491fcc-e635-4920-b270-3a7cc1cf46ae";
+  static const String liveRewardedAdUnitId = "90491fcc-e635-4920-b270-3a7cc1cf46ae";
+
+  // Active Ad Credentials (Live Ads)
+  static const String defaultAppKey = liveAppKey;
+  static const String defaultBannerAdUnitId = liveBannerAdUnitId;
+  static const String defaultInterstitialAdUnitId = liveInterstitialAdUnitId;
+  static const String defaultRewardedAdUnitId = liveRewardedAdUnitId;
+
+  // Unity Ads Dashboard Credentials (Sound Canvas Backup)
   static const String unityGameId = "800370998";
   static const String unityOrgCoreId = "13469955020066";
   static const String unityStatsApiKey = "60b23c5ea1ead4776e9ac9fc62f3f353ee77770f0f6ce4bb09226a81b49e1cbd";
-
-  // Placements (Android)
-  static const String defaultBannerPlacement = "BP_Banner_Android";
-  static const String defaultInterstitialPlacement = "BP_Interstitial_Android";
-  static const String defaultRewardedPlacement = "BP_Rewarded_Android";
-
-  // Active Ad Credentials
-  static const String defaultAppKey = unityGameId;
-  static const String defaultBannerAdUnitId = defaultBannerPlacement;
-  static const String defaultInterstitialAdUnitId = defaultInterstitialPlacement;
-  static const String defaultRewardedAdUnitId = defaultRewardedPlacement;
-
-  // LevelPlay Mediation Backup Credentials (Saved for future mediation linking)
-  static const String levelPlayAppKey = "27977c8bd";
-  static const String levelPlayBannerAdUnitId = "yleah8iqe2n6cazu";
-  static const String levelPlayInterstitialAdUnitId = "k9e660zpvll4l3k9";
-  static const String levelPlayRewardedAdUnitId = "rewarded_ad_unit";
 
   String appKey = defaultAppKey;
   String bannerAdUnitId = defaultBannerAdUnitId;
@@ -43,20 +38,20 @@ class AdManager implements LevelPlayInitListener {
 
   bool isInitialized = false;
   bool isInitializing = false;
-  bool isTestMode = true;
+  bool isTestMode = false;
   bool isUnityAdsEngine = false;
 
   Completer<bool>? _initCompleter;
   final StreamController<bool> _initStatusController = StreamController<bool>.broadcast();
   Stream<bool> get onInitStatusChanged => _initStatusController.stream;
 
-  /// Initializes Unity Ads or Unity LevelPlay SDK once at app startup
+  /// Initializes Unity Ads or Unity LevelPlay SDK once at app startup for Live Ads
   Future<void> initialize({
     String? appKeyOverride,
     String? bannerAdUnitOverride,
     String? interstitialAdUnitOverride,
     String? rewardedAdUnitOverride,
-    bool enableTestMode = true,
+    bool enableTestMode = false,
   }) async {
     if (isInitialized) {
       debugPrint('[AdManager] Ad SDK is already initialized.');
