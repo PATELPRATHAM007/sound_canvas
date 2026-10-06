@@ -5,6 +5,23 @@
 -keep class io.flutter.view.** { *; }
 -keep class io.flutter.embedding.** { *; }
 -keep class io.flutter.provider.** { *; }
+-keep class io.flutter.plugins.** { *; }
+
+# App Package & MainActivity
+-keep class com.novasoftstudio.soundcanvas.** { *; }
+-keepclassmembers class com.novasoftstudio.soundcanvas.** { *; }
+
+# Dart JNI Bridges (Required for LevelPlay Mediation)
+-keep class com.github.dart_lang.jni.** { *; }
+-keep class com.github.dart_lang.jni_flutter.** { *; }
+-dontwarn com.github.dart_lang.jni.**
+-dontwarn com.github.dart_lang.jni_flutter.**
+
+# Unity Ads & LevelPlay Flutter Plugins
+-keep class com.rebeloid.unity_ads.** { *; }
+-keep class com.unity3d.flutter.** { *; }
+-dontwarn com.rebeloid.unity_ads.**
+-dontwarn com.unity3d.flutter.**
 
 # IronSource & Unity LevelPlay Mediation SDK
 -keepclassmembers class * implements com.ironsource.mediationsdk.sdk.RewardBasedVideoAdapterApi { *; }
