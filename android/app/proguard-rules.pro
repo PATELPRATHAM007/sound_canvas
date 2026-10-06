@@ -24,6 +24,13 @@
 -dontwarn com.unity3d.services.**
 -dontwarn com.unity3d.ads.**
 
-# Google Play Services Advertising ID
--keep class com.google.android.gms.ads.identifier.** { *; }
--dontwarn com.google.android.gms.ads.identifier.**
+# Google Play Services
+-keep class com.google.android.gms.** { *; }
+-dontwarn com.google.android.gms.**
+
+# Kotlin Coroutines
+-keep class kotlinx.coroutines.** { *; }
+-dontwarn kotlinx.coroutines.**
+
+# Google Play Core Deferred Components
+-dontwarn com.google.android.play.core.**
