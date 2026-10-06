@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../widgets/glass_container.dart';
-import '../ads/banner_ad_widget.dart';
 import '../ads/interstitial_ad_manager.dart';
 
 class NotificationsScreen extends StatefulWidget {
@@ -179,21 +178,13 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               ),
             ),
 
-            const SizedBox(height: 12),
-
-            // Banner Ad
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: BannerAdWidget(),
-            ),
-
-            const SizedBox(height: 12),
+            const SizedBox(height: 8),
 
             // Notification List
             Expanded(
               child: ListView.separated(
                 physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                padding: const EdgeInsets.only(left: 20, right: 20, top: 8, bottom: 180),
                 itemCount: _filteredList.length,
                 separatorBuilder: (context, index) => const SizedBox(height: 12),
                 itemBuilder: (context, index) {

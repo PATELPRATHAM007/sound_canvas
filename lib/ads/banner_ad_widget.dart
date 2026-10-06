@@ -53,12 +53,12 @@ class _BannerAdWidgetState extends State<BannerAdWidget>
   Widget build(BuildContext context) {
     super.build(context);
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
       alignment: Alignment.center,
       child: GlassContainer(
-        height: 66,
+        height: 58,
         borderRadius: 16,
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
         backgroundColor: Colors.white.withValues(alpha: 0.90),
         borderColor: Colors.white.withValues(alpha: 0.95),
         child: Center(child: _buildBannerContent()),
@@ -94,6 +94,24 @@ class _BannerAdWidgetState extends State<BannerAdWidget>
 
     // Direct Unity Ads Placement (if numerical Game ID)
     if (AdManager.instance.isUnityAdsEngine) {
+      if (_bannerFailed) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Icon(Icons.bolt_rounded, color: Color(0xFF5B46F6), size: 16),
+            SizedBox(width: 6),
+            Text(
+              'Awaiting live sponsor fill...',
+              style: TextStyle(
+                color: Color(0xFF73809C),
+                fontSize: 11,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        );
+      }
+
       final placementId = AdManager.instance.bannerAdUnitId.contains('-')
           ? AdManager.unityBannerPlacementId
           : AdManager.instance.bannerAdUnitId;
@@ -105,12 +123,19 @@ class _BannerAdWidgetState extends State<BannerAdWidget>
           placementId: placementId,
           onLoad: (placementId) {
             debugPrint('[BannerAdWidget] Unity Live Banner Loaded: $placementId');
+            _retryTimer?.cancel();
             if (mounted) setState(() => _bannerFailed = false);
           },
           onClick: (placementId) => debugPrint('[BannerAdWidget] Unity Banner Clicked: $placementId'),
           onFailed: (placementId, error, message) {
             debugPrint('[BannerAdWidget] Unity Banner note: $error $message');
-            if (mounted) setState(() => _bannerFailed = true);
+            if (mounted) {
+              setState(() => _bannerFailed = true);
+              _retryTimer?.cancel();
+              _retryTimer = Timer(const Duration(seconds: 25), () {
+                if (mounted) setState(() => _bannerFailed = false);
+              });
+            }
           },
         ),
       );

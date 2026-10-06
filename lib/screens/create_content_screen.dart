@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../widgets/glass_container.dart';
-import '../ads/banner_ad_widget.dart';
 import '../ads/interstitial_ad_manager.dart';
 
 class CreateContentScreen extends StatefulWidget {
@@ -296,11 +295,6 @@ class _CreateContentScreenState extends State<CreateContentScreen> {
                         );
                       }).toList(),
                     ),
-
-                    const SizedBox(height: 16),
-
-                    // Banner Ad
-                    const BannerAdWidget(),
 
                     const SizedBox(height: 24),
 

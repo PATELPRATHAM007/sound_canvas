@@ -7,7 +7,6 @@ import '../widgets/hero_card.dart';
 import '../widgets/creator_section.dart';
 import '../widgets/trending_section.dart';
 import '../ads/ad_manager.dart';
-import '../ads/banner_ad_widget.dart';
 import '../ads/interstitial_ad_manager.dart';
 import 'notifications_screen.dart';
 import 'messages_screen.dart';
@@ -211,11 +210,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                   );
                 },
               ),
-              const SizedBox(height: 14),
-
-              // 4. Banner Ad Widget (Placed directly below SearchSection)
-              const BannerAdWidget(),
-              const SizedBox(height: 14),
+              const SizedBox(height: 18),
 
               // 5. Category Tabs
               CategoryTabs(
@@ -352,8 +347,8 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                 },
               ),
 
-              // Bottom padding spacer for floating nav
-              const SizedBox(height: 110),
+              // Bottom padding spacer for persistent banner and floating nav
+              const SizedBox(height: 180),
             ],
           ),
         ),

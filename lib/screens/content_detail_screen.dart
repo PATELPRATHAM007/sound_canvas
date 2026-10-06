@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../widgets/glass_container.dart';
-import '../ads/banner_ad_widget.dart';
 import '../ads/interstitial_ad_manager.dart';
 import '../services/service_locator.dart';
 import '../services/audio_player_service.dart';
@@ -384,14 +383,6 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
                     },
                   ),
                 ],
-              ),
-
-              const SizedBox(height: 20),
-
-              // Banner Ad Widget
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: BannerAdWidget(),
               ),
 
               const SizedBox(height: 20),

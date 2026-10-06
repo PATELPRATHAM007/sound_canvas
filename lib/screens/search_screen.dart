@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../widgets/glass_container.dart';
-import '../ads/banner_ad_widget.dart';
 import '../ads/interstitial_ad_manager.dart';
 import 'content_detail_screen.dart';
 import '../services/service_locator.dart';
@@ -237,14 +236,6 @@ class _SearchScreenState extends State<SearchScreen> {
 
             const SizedBox(height: 8),
 
-            // Banner Ad Widget
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: BannerAdWidget(),
-            ),
-
-            const SizedBox(height: 12),
-
             // Main Content Area
             Expanded(
               child: SingleChildScrollView(
@@ -468,7 +459,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           );
                         },
                       ),
-                    const SizedBox(height: 100),
+                    const SizedBox(height: 180),
                   ],
                 ),
               ),

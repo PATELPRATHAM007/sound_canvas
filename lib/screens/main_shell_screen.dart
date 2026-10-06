@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../widgets/floating_bottom_nav.dart';
 import '../ads/interstitial_ad_manager.dart';
+import '../ads/banner_ad_widget.dart';
 import 'discover_screen.dart';
 import 'search_screen.dart';
 import 'notifications_screen.dart';
@@ -71,7 +72,7 @@ class _MainShellScreenState extends State<MainShellScreen> {
             children: _pages,
           ),
 
-          // Floating Mini Player & Bottom Navigation Column
+          // Persistent Banner Ad, Floating Mini Player & Bottom Navigation Column
           Positioned(
             left: 0,
             right: 0,
@@ -79,6 +80,7 @@ class _MainShellScreenState extends State<MainShellScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                const BannerAdWidget(),
                 const MiniPlayerBar(),
                 FloatingBottomNav(
                   selectedIndex: _currentTabIndex,

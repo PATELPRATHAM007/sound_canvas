@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../widgets/glass_container.dart';
-import '../ads/banner_ad_widget.dart';
 import '../ads/interstitial_ad_manager.dart';
 import '../ads/rewarded_ad_manager.dart';
 import '../ads/ad_manager.dart';
@@ -487,14 +486,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
 
-              const SizedBox(height: 14),
-
-              // Banner Ad Widget
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: BannerAdWidget(),
-              ),
-
               const SizedBox(height: 16),
 
               // Profile Content Tabs
@@ -611,7 +602,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
 
-              const SizedBox(height: 110),
+              const SizedBox(height: 180),
             ],
           ),
         ),
